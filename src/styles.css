@@ -1,0 +1,33 @@
+/* 1. REGISTRO DE LA FUENTE */
+@font-face {
+  font-family: "PP NeueBit Bold";
+  src: url("/PPNeueBit-Bold.otf") format("opentype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* 2. APLICACIÓN GLOBAL */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #111;
+  /* Aplicamos la fuente a todo por defecto */
+  font-family: "PP NeueBit Bold", monospace;
+  -webkit-font-smoothing: none; /* Esto hace que los píxeles se vean más nítidos */
+}
+
+/* Quitamos la barra de scroll fea */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Aseguramos que los botones e inputs hereden la fuente */
+button,
+input,
+textarea {
+  font-family: inherit;
+}
