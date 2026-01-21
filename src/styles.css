@@ -1,7 +1,6 @@
-/* 1. REGISTRO DE LA FUENTE */
 @font-face {
   font-family: "PP NeueBit Bold";
-  src: url("/PPNeueBit-Bold.otf") format("opentype");
+  src: url("./PPNeueBit-Bold.otf") format("opentype");
   font-weight: bold;
   font-style: normal;
 }
