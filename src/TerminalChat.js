@@ -4,7 +4,6 @@ import { useTheme } from "./ThemeContext";
 export default function TerminalChat() {
   const { isDarkMode } = useTheme();
 
-  // Detectar tamaño de pantalla
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -14,7 +13,6 @@ export default function TerminalChat() {
 
   const isMobile = windowWidth < 810;
 
-  // Estados
   const [history, setHistory] = useState([]);
   const [currentText, setCurrentText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -30,9 +28,8 @@ export default function TerminalChat() {
   const [isRestartHovered, setIsRestartHovered] = useState(false);
 
   const inputRef = useRef(null);
-  const bottomRef = useRef(null); // NUEVO: Referencia al final del chat
+  const chatContainerRef = useRef(null); // Referencia al contenedor del chat
 
-  // Colores
   const theme = {
     bg: isDarkMode ? "#111111" : "#ffffff",
     text: isDarkMode ? "#ffffff" : "#000000",
@@ -41,7 +38,6 @@ export default function TerminalChat() {
     hover: "#FF2B00",
   };
 
-  // DATOS
   const scenes = {
     intro: {
       intro:
@@ -156,13 +152,15 @@ export default function TerminalChat() {
     }
   }, [history]);
 
-  // --- LÓGICA DE SCROLL AUTOMÁTICO MEJORADA ---
+  // --- LÓGICA DE SCROLL AUTOMÁTICO CORREGIDA ---
   useEffect(() => {
-    if (bottomRef.current) {
-      // Hacemos scroll suave al elemento invisible del final
-      bottomRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    // Usamos una referencia al contenedor y forzamos la posición del scroll
+    if (chatContainerRef.current) {
+      // Asignar directamente el scrollTop es instantáneo y funciona bien en móvil
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
-  }, [history, currentText, showOptions]); // Se ejecuta cada vez que cambia el texto
+  }, [history, currentText, showOptions]); // Se ejecuta con cada cambio de texto
 
   useEffect(() => {
     const now = new Date();
@@ -252,6 +250,8 @@ export default function TerminalChat() {
   const fontSize = isMobile ? 28 : 64;
   const lineHeight = isMobile ? 24 : 48;
   const headerFontSize = isMobile ? "10px" : "16px";
+  // Padding inferior dinámico: más grande en móvil para el teclado y la barra de navegación
+  const bottomPadding = isMobile ? "120px" : "60px";
 
   return (
     <div
@@ -278,11 +278,12 @@ export default function TerminalChat() {
 
       {/* AREA CHAT */}
       <div
+        ref={chatContainerRef} // Referencia aplicada al contenedor que hace scroll
         className="no-scrollbar"
         style={{
           flex: 1,
-          overflowY: "auto", // IMPORTANTE: El scroll ocurre AQUÍ dentro
-          padding: "16px 16px 20px 16px",
+          overflowY: "auto",
+          padding: "16px 16px 0px 16px", // Quitamos el padding inferior aquí
         }}
       >
         <div onClick={() => inputRef.current?.focus()}>
@@ -376,8 +377,8 @@ export default function TerminalChat() {
               </div>
             </div>
           )}
-          {/* ELEMENTO INVISIBLE "DUMMY" PARA EL SCROLL */}
-          <div ref={bottomRef} style={{ height: "20px" }} />
+          {/* ELEMENTO INVISIBLE PARA EL PADDING INFERIOR */}
+          <div style={{ height: bottomPadding }} />
         </div>
       </div>
 
