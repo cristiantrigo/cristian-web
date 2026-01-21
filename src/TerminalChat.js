@@ -29,8 +29,8 @@ export default function TerminalChat() {
   const [hoveredOption, setHoveredOption] = useState(null);
   const [isRestartHovered, setIsRestartHovered] = useState(false);
 
-  const terminalRef = useRef(null);
   const inputRef = useRef(null);
+  const bottomRef = useRef(null); // NUEVO: Referencia al final del chat
 
   // Colores
   const theme = {
@@ -156,11 +156,13 @@ export default function TerminalChat() {
     }
   }, [history]);
 
+  // --- LÓGICA DE SCROLL AUTOMÁTICO MEJORADA ---
   useEffect(() => {
-    if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    if (bottomRef.current) {
+      // Hacemos scroll suave al elemento invisible del final
+      bottomRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
-  }, [history, currentText, showOptions]);
+  }, [history, currentText, showOptions]); // Se ejecuta cada vez que cambia el texto
 
   useEffect(() => {
     const now = new Date();
@@ -247,7 +249,6 @@ export default function TerminalChat() {
     }
   };
 
-  // Variables de diseño
   const fontSize = isMobile ? 28 : 64;
   const lineHeight = isMobile ? 24 : 48;
   const headerFontSize = isMobile ? "10px" : "16px";
@@ -277,11 +278,10 @@ export default function TerminalChat() {
 
       {/* AREA CHAT */}
       <div
-        ref={terminalRef}
         className="no-scrollbar"
         style={{
           flex: 1,
-          overflowY: "auto",
+          overflowY: "auto", // IMPORTANTE: El scroll ocurre AQUÍ dentro
           padding: "16px 16px 20px 16px",
         }}
       >
@@ -376,6 +376,8 @@ export default function TerminalChat() {
               </div>
             </div>
           )}
+          {/* ELEMENTO INVISIBLE "DUMMY" PARA EL SCROLL */}
+          <div ref={bottomRef} style={{ height: "20px" }} />
         </div>
       </div>
 

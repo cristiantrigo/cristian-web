@@ -5,7 +5,6 @@ import TerminalChat from "./TerminalChat";
 import Sidebar from "./Sidebar";
 
 export default function App() {
-  // Detectar móvil para cambiar el diseño
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -14,39 +13,37 @@ export default function App() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const isMobile = windowWidth < 800;
+  const isMobile = windowWidth < 810;
 
   return (
     <ThemeProvider>
+      {/* CONTENEDOR PRINCIPAL: Ocupa el 100% real de la pantalla */}
       <div
         style={{
           display: "flex",
-          // Si es móvil columna (uno encima de otro), si es PC fila (lado a lado)
           flexDirection: isMobile ? "column" : "row",
-          height: "100vh", // Ocupa toda la pantalla
+          height: "100dvh", // Truco PRO para móviles (evita problemas con la barra de URL)
           width: "100vw",
-          overflow: "hidden", // Evita scroll doble
+          overflow: "hidden" // IMPORTANTE: Impide que se mueva toda la página
         }}
       >
-        {/* LADO IZQUIERDO (O SUPERIOR EN MÓVIL) */}
-        <div
-          style={{
-            width: isMobile ? "100%" : "35%", // 35% de ancho para el naranja
-            height: isMobile ? "auto" : "100%",
-            flexShrink: 0,
-          }}
-        >
+        {/* LADO IZQUIERDO (SIDEBAR) */}
+        <div style={{ 
+            width: isMobile ? "100%" : "35%", 
+            height: isMobile ? "auto" : "100%", // En móvil se adapta a su contenido
+            flexShrink: 0, // PROHIBIDO ENCOGERSE: Esto lo mantiene fijo arriba
+            zIndex: 10 // Asegura que quede por encima visualmente
+        }}>
           <Sidebar />
         </div>
 
         {/* LADO DERECHO (CHAT) */}
-        <div
-          style={{
-            flex: 1, // Toma el espacio restante
-            height: "100%",
+        <div style={{ 
+            flex: 1, // Toma todo el espacio sobrante
+            height: "100%", // Ocupa todo el alto disponible
             position: "relative",
-          }}
-        >
+            overflow: "hidden" // El scroll lo gestionará el componente interno
+        }}>
           <TerminalChat />
         </div>
       </div>
