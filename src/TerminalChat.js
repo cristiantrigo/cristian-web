@@ -4,7 +4,11 @@ import { useTheme } from "./ThemeContext";
 export default function TerminalChat() {
   const { isDarkMode } = useTheme();
 
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  // --- 1. DETECTOR DE PANTALLA ---
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1200
+  );
+
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -13,6 +17,7 @@ export default function TerminalChat() {
 
   const isMobile = windowWidth < 810;
 
+  // --- 2. ESTADOS ---
   const [history, setHistory] = useState([]);
   const [currentText, setCurrentText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -28,7 +33,7 @@ export default function TerminalChat() {
   const [isRestartHovered, setIsRestartHovered] = useState(false);
 
   const inputRef = useRef(null);
-  const chatContainerRef = useRef(null); // Referencia al contenedor del chat
+  const bottomRef = useRef(null); // Referencia al final "invisible"
 
   const theme = {
     bg: isDarkMode ? "#111111" : "#ffffff",
@@ -152,15 +157,19 @@ export default function TerminalChat() {
     }
   }, [history]);
 
-  // --- LÓGICA DE SCROLL AUTOMÁTICO CORREGIDA ---
+  // --- 3. LÓGICA DE SCROLL MEJORADA (LA CLAVE) ---
   useEffect(() => {
-    // Usamos una referencia al contenedor y forzamos la posición del scroll
-    if (chatContainerRef.current) {
-      // Asignar directamente el scrollTop es instantáneo y funciona bien en móvil
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+    if (bottomRef.current) {
+      // En MÓVIL usamos "auto" (instantáneo) para evitar el efecto lento pixel a pixel.
+      // En PC usamos "smooth" porque queda elegante.
+      const scrollBehavior = isMobile ? "auto" : "smooth";
+
+      bottomRef.current.scrollIntoView({
+        behavior: scrollBehavior,
+        block: "end", // Alinea el final del padding con el final de la pantalla
+      });
     }
-  }, [history, currentText, showOptions]); // Se ejecuta con cada cambio de texto
+  }, [history, currentText, showOptions, isMobile]);
 
   useEffect(() => {
     const now = new Date();
@@ -250,8 +259,9 @@ export default function TerminalChat() {
   const fontSize = isMobile ? 28 : 64;
   const lineHeight = isMobile ? 24 : 48;
   const headerFontSize = isMobile ? "10px" : "16px";
-  // Padding inferior dinámico: más grande en móvil para el teclado y la barra de navegación
-  const bottomPadding = isMobile ? "120px" : "60px";
+
+  // Aumentamos el padding en móvil para asegurar ese "aire" que pedías
+  const bottomPadding = isMobile ? "80px" : "32px";
 
   return (
     <div
@@ -278,12 +288,11 @@ export default function TerminalChat() {
 
       {/* AREA CHAT */}
       <div
-        ref={chatContainerRef} // Referencia aplicada al contenedor que hace scroll
         className="no-scrollbar"
         style={{
           flex: 1,
           overflowY: "auto",
-          padding: "16px 16px 0px 16px", // Quitamos el padding inferior aquí
+          padding: "16px 16px 0px 16px",
         }}
       >
         <div onClick={() => inputRef.current?.focus()}>
@@ -377,8 +386,8 @@ export default function TerminalChat() {
               </div>
             </div>
           )}
-          {/* ELEMENTO INVISIBLE PARA EL PADDING INFERIOR */}
-          <div style={{ height: bottomPadding }} />
+          {/* EL ELEMENTO INVISIBLE CON REF (CLAVE PARA EL PADDING) */}
+          <div ref={bottomRef} style={{ height: bottomPadding }} />
         </div>
       </div>
 
