@@ -1,7 +1,7 @@
-/* 1. REGISTRO DE LA FUENTE */
 @font-face {
   font-family: "PP NeueBit Bold";
-  src: url("/PPNeueBit-Bold.otf") format("opentype");
+  /* El punto significa "busca en esta misma carpeta" */
+  src: url("./PPNeueBit-Bold.otf") format("opentype");
   font-weight: bold;
   font-style: normal;
 }
