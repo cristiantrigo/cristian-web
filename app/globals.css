@@ -1,0 +1,21 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #111;
+  font-family: var(--font-neuebit), monospace;
+  -webkit-font-smoothing: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+}
