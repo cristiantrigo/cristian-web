@@ -76,7 +76,7 @@ function buildProjectScenes() {
   return scenes;
 }
 
-export default function TerminalChat() {
+export default function TerminalChat({ onWorkMode }) {
   const { isDarkMode } = useTheme();
 
   const [windowWidth, setWindowWidth] = useState(1200);
@@ -303,6 +303,10 @@ export default function TerminalChat() {
   };
 
   const handleOptionClick = (optionNumber, nextScene) => {
+    if (nextScene === "work" && onWorkMode) {
+      onWorkMode();
+      return;
+    }
     setHoveredOption(null);
     setHistory((prev) => [
       ...prev,
@@ -409,98 +413,7 @@ export default function TerminalChat() {
             </div>
           )}
 
-          {showOptions && !isTyping && currentSceneData?.type === "projectList" && (
-            <div style={{ marginTop: "32px" }}>
-              {currentSceneData.projects.map((project, index) => (
-                <button
-                  key={project.id}
-                  onClick={() =>
-                    handleOptionClick(index + 1, `work-${project.id}`)
-                  }
-                  onMouseEnter={() => setHoveredOption(index + 1)}
-                  onMouseLeave={() => setHoveredOption(null)}
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    textAlign: "left",
-                    background: "transparent",
-                    border: "none",
-                    cursor: "pointer",
-                    fontSize: `${fontSize}px`,
-                    lineHeight: `${lineHeight}px`,
-                    color:
-                      hoveredOption === index + 1
-                        ? theme.hover
-                        : theme.interactive,
-                    marginBottom: "16px",
-                    padding: 0,
-                    transition: "color 0.1s ease",
-                  }}
-                >
-                  {index + 1}. {project.name} ({project.year})
-                </button>
-              ))}
-              <button
-                onClick={() =>
-                  handleOptionClick("←", currentSceneData.backOption.next)
-                }
-                onMouseEnter={() => setHoveredOption("back")}
-                onMouseLeave={() => setHoveredOption(null)}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  textAlign: "left",
-                  background: "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  fontSize: `${fontSize}px`,
-                  lineHeight: `${lineHeight}px`,
-                  color:
-                    hoveredOption === "back"
-                      ? theme.hover
-                      : theme.interactive,
-                  marginBottom: "16px",
-                  padding: 0,
-                  transition: "color 0.1s ease",
-                }}
-              >
-                0. {currentSceneData.backOption.text}
-              </button>
-              <div
-                style={{
-                  marginTop: "32px",
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: `${fontSize}px`,
-                  lineHeight: `${lineHeight}px`,
-                  color: theme.text,
-                }}
-              >
-                <span style={{ marginRight: "12px" }}>&gt;</span>
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="1, 2, 3..."
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    outline: "none",
-                    color: theme.text,
-                    width: "100%",
-                    fontSize: `${fontSize}px`,
-                    lineHeight: `${lineHeight}px`,
-                    padding: 0,
-                  }}
-                  autoFocus
-                />
-              </div>
-            </div>
-          )}
-
-          {showOptions && !isTyping && currentSceneData && currentSceneData.type !== "projectList" && currentSceneData.options && (
+          {showOptions && !isTyping && currentSceneData && currentSceneData.options && (
             <div style={{ marginTop: "32px" }}>
               {currentSceneData.options.map((option) => (
                 <button
