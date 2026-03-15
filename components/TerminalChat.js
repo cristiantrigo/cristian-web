@@ -121,7 +121,7 @@ export default function TerminalChat() {
   const scenes = {
     intro: {
       intro:
-        "Crafting digital products for over 8 years. I've designed and built experiences for start-ups, scale-ups & global companies.",
+        "Crafting digital products ✨ for over 8 years. I've designed and built experiences for start-ups, scale-ups & global companies.",
       text: "What brings you here?",
       options: [
         { number: 1, text: "Tell me about yourself", next: "about" },

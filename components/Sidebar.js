@@ -28,7 +28,7 @@ export default function Sidebar() {
   useEffect(() => {
     let timer;
     if (isCopied) {
-      setEmailText("Copied");
+      setEmailText("☕ Copied");
       timer = setTimeout(() => {
         setIsCopied(false);
         setEmailText(emailOriginal);
