@@ -126,7 +126,7 @@ export default function TerminalChat({ onWorkMode }) {
       options: [
         { number: 1, text: "Tell me about yourself", next: "about" },
         { number: 2, text: "What is your career path?", next: "career" },
-        { number: 3, text: "What are your interests?", next: "interests" },
+        { number: 3, text: "Show me your work", next: "work" },
       ],
     },
     about: {
@@ -472,7 +472,7 @@ export default function TerminalChat({ onWorkMode }) {
                     lineHeight: `${lineHeight}px`,
                     padding: 0,
                   }}
-                  autoFocus
+                  autoFocus={!/Mobi|Android/i.test(navigator.userAgent)}
                 />
               </div>
             </div>
