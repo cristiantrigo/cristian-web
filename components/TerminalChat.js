@@ -472,7 +472,7 @@ export default function TerminalChat({ onWorkMode }) {
                     lineHeight: `${lineHeight}px`,
                     padding: 0,
                   }}
-                  autoFocus
+                  autoFocus={!/Mobi|Android/i.test(navigator.userAgent)}
                 />
               </div>
             </div>
